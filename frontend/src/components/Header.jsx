@@ -16,7 +16,6 @@ function MarqueeBanner() {
   return (
     <div className="marquee-banner">
       <div className="marquee-left">
-        <span className="marquee-fire-label">🔥 Trending:</span>
         <div className="marquee-track-wrapper">
           <div className="marquee-track">
             {allItems.map((item, idx) => (
@@ -30,7 +29,7 @@ function MarqueeBanner() {
       </div>
       <div className="marquee-right">
         <a href="tel:+919876543210">📞 +91 98765 43210</a>
-        <a href="mailto:info@prephub.in">✉️ info@prephub.in</a>
+        <a href="https://sunilsiracademy.com/">sunilsiracademy.com</a>
       </div>
     </div>
   );
@@ -52,9 +51,21 @@ const TABS = [
       { label: 'Teaching',         icon: '📚', desc: 'OTET, OSSTET & school teacher papers' }
     ]
   },
+ 
   { 
-    label: 'Subject Test',  
-    to: '/subject-test',  
+    label: 'Moke Test',  
+    to: '/mock-test',  
+    arrow: true,
+    categories: [
+      { label: 'State PSC / SSSC',  icon: '🏛️', desc: 'OSSSC, OSSC CGL mock exams' },
+      { label: 'SSC & Railway',     icon: '🚆', desc: 'SSC CGL, CHSL, RRB mocks' },
+      { label: 'Bank & Insurance',  icon: '🏦', desc: 'IBPS, SBI, LIC mocks' },
+      { label: 'Police & Defence',  icon: '🚔', desc: 'Odisha Police SI & Constable mocks' }
+    ]
+  },
+  { 
+    label: 'Subject Test Page', 
+    to: '/subject-test', 
     arrow: true,
     categories: [
       { label: 'Mathematics',       icon: '🧮', desc: 'Quantitative aptitude & shortcuts' },

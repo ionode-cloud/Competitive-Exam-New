@@ -27,7 +27,7 @@ function Dashboard() {
   const slide = promoSlides[currentSlide];
 
   return (
-    <div className="dashboard wrap">
+    <div className="dashboard-full">
       <div className="dash-grid">
         <div className="cat-tiles">
           {catTiles.map((t, i) => (
@@ -143,8 +143,8 @@ const qaPanels = [
 
 function QuickAccess() {
   return (
-    <section style={{ padding: '50px 0', background: 'linear-gradient(to bottom, #f8fafc, #ffffff)', borderBottom: '1px solid rgba(0,0,0,0.03)' }}>
-      <div className="wrap">
+    <section style={{ padding: '0', background: 'linear-gradient(to bottom, #f8fafc, #ffffff)' }}>
+      <div className="wrap-full">
         <div className="qa-grid">
           {qaPanels.map((panel, i) => (
             <div key={i} className="qa-card-premium" style={{ '--bg-accent': panel.bgAccent }}>
@@ -186,8 +186,8 @@ const homeExamCategories = [
 
 function ExamSectionPreview() {
   return (
-    <section id="exam-section" style={{ background: '#fff', borderTop: '1px solid var(--line)', padding: '56px 0' }}>
-      <div className="wrap">
+    <section id="exam-section" style={{ background: '#fff', padding: '0' }}>
+      <div className="wrap-full">
         <SectionHeader eyebrow="🎯 Exam Section" title="Explore Curated Exam Categories" linkTo="/exam-section" linkLabel="All Categories →" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
           {homeExamCategories.map((cat, i) => (
@@ -231,8 +231,8 @@ const homeSubjectTests = [
 
 function SubjectTestPreview() {
   return (
-    <section id="subject-test" style={{ padding: '56px 0', background: 'var(--bg)' }}>
-      <div className="wrap">
+    <section id="subject-test" style={{ padding: '0', background: 'var(--bg)' }}>
+      <div className="wrap-full">
         <SectionHeader eyebrow="📝 Subject Test" title="Popular Destinations: Subject Modules" linkTo="/subject-test" linkLabel="All Subjects →" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: '24px' }}>
           {homeSubjectTests.map((s, i) => (
@@ -281,8 +281,8 @@ const homePYQBooks = [
 
 function PYQEbookPreview() {
   return (
-    <section id="pyq-ebook" style={{ background: '#fff', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '56px 0' }}>
-      <div className="wrap">
+    <section id="pyq-ebook" style={{ background: '#fff', padding: '0' }}>
+      <div className="wrap-full">
         <SectionHeader eyebrow="📚 PYQ Ebook" title="Neumorphic E-Book Library Showcase" linkTo="/pyq-ebook" linkLabel="All E-Books →" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: '22px' }}>
           {homePYQBooks.map((book, i) => (
@@ -325,8 +325,8 @@ const homeMaterials = [
 
 function MaterialPagePreview() {
   return (
-    <section id="material-page" style={{ padding: '56px 0', background: 'var(--bg)' }}>
-      <div className="wrap">
+    <section id="material-page" style={{ padding: '0', background: 'var(--bg)' }}>
+      <div className="wrap-full">
         <SectionHeader eyebrow="📁 Material Page" title="Statistics & Core Study Repositories" linkTo="/materials" linkLabel="Full Library →" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))', gap: '20px' }}>
           {homeMaterials.map((m, i) => (
@@ -364,8 +364,8 @@ const homePackages = [
 
 function SubscriptionPreview() {
   return (
-    <section id="subscription" style={{ background: '#fff', borderTop: '1px solid var(--line)', padding: '64px 0' }}>
-      <div className="wrap">
+    <section id="subscription" style={{ background: '#fff', padding: '0' }}>
+      <div className="wrap-full">
         <SectionHeader eyebrow="💎 Subscription" title="Choose the Luxury Plan for Ultimate Success" linkTo="/subscription" linkLabel="View All Subscriptions →" />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', alignItems: 'stretch' }}>
           {homePackages.map((pkg, i) => (
@@ -426,9 +426,9 @@ function SubscriptionPreview() {
 ══════════════════════════════════════════════════════════ */
 function CTABand() {
   return (
-    <section style={{ padding: '40px 0 60px' }}>
-      <div className="wrap">
-        <div className="cta-band-premium" style={{ borderRadius: '24px', padding: '56px 40px', textAlign: 'center', position: 'relative' }}>
+    <section style={{ padding: '0' }}>
+      <div className="wrap-full">
+        <div className="cta-band-premium" style={{ borderRadius: '25px', padding: '56px 40px', textAlign: 'center', position: 'relative' }}>
           <div style={{ position: 'relative', zIndex: 5 }}>
             <div className="eyebrow" style={{ color: '#FFC93C', letterSpacing: '2px', fontWeight: 800 }}>START PREPARATION</div>
             <h2 style={{ color: '#fff', fontSize: 'clamp(24px, 3.5vw, 32px)', margin: '14px 0 24px', fontWeight: 850, letterSpacing: '-0.5px' }}>
@@ -449,7 +449,7 @@ function CTABand() {
 ══════════════════════════════════════════════════════════ */
 export default function LandingPage() {
   return (
-    <>
+    <div className="landing-page-container">
       {/* Hero */}
       <Dashboard />
       {/* Quick Access */}
@@ -466,6 +466,6 @@ export default function LandingPage() {
       <SubscriptionPreview />
       {/* CTA */}
       <CTABand />
-    </>
+    </div>
   );
 }
