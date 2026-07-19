@@ -84,7 +84,7 @@ export default function MockTestPage() {
         <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
           {/* Sidebar — Categories */}
-          <div style={{ minWidth: 220, flex: '0 0 220px' }}>
+          <div className="responsive-sidebar">
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', letterSpacing: 1.5, marginBottom: 10 }}>CATEGORIES</div>
             {mockTestCategories.map((c, i) => (
               <button key={i} onClick={() => setActiveCategory(i)} style={{
@@ -106,10 +106,9 @@ export default function MockTestPage() {
           {/* Tests Panel */}
           <div style={{ flex: 1, minWidth: 0 }}>
             {/* Category Header */}
-            <div style={{
+            <div className="subject-header-responsive" style={{
               background: cat.bg, border: `1.5px solid ${cat.color}33`,
-              borderRadius: 14, padding: '20px 24px', marginBottom: 20,
-              display: 'flex', alignItems: 'center', gap: 16
+              borderRadius: 14, marginBottom: 20,
             }}>
               <div style={{
                 width: 56, height: 56, borderRadius: 14,
@@ -129,16 +128,9 @@ export default function MockTestPage() {
             {/* Test Cards */}
             <div style={{ display: 'grid', gap: 14 }}>
               {cat.tests.map((test, j) => (
-                <div key={j} style={{
-                  background: 'var(--card)', border: '1px solid var(--line)',
-                  borderRadius: 12, padding: '18px 22px',
-                  display: 'flex', alignItems: 'center', gap: 18,
-                  transition: 'all .15s', cursor: 'pointer',
+                <div key={j} className="responsive-test-card" style={{
                   borderLeft: `4px solid ${cat.color}`,
-                }}
-                  onMouseEnter={e => e.currentTarget.style.boxShadow = 'var(--sh-2)'}
-                  onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
-                >
+                }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                       {test.free && (

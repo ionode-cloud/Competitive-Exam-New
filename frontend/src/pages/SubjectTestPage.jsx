@@ -97,7 +97,7 @@ export default function SubjectTestPage() {
         <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start', flexWrap: 'wrap' }}>
 
           {/* Sidebar — Subjects */}
-          <div style={{ minWidth: 200, flex: '0 0 200px' }}>
+          <div className="responsive-sidebar">
             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', letterSpacing: 1.5, marginBottom: 10 }}>SUBJECTS</div>
             {subjects.map((s, i) => (
               <button key={i} onClick={() => setActiveSubject(i)} style={{
@@ -119,10 +119,9 @@ export default function SubjectTestPage() {
           {/* Tests Panel */}
           <div style={{ flex: 1, minWidth: 0 }}>
             {/* Subject Header */}
-            <div style={{
+            <div className="subject-header-responsive" style={{
               background: sub.bg, border: `1.5px solid ${sub.color}33`,
-              borderRadius: 14, padding: '20px 24px', marginBottom: 20,
-              display: 'flex', alignItems: 'center', gap: 16
+              borderRadius: 14, marginBottom: 20,
             }}>
               <div style={{
                 width: 56, height: 56, borderRadius: 14,
@@ -142,16 +141,9 @@ export default function SubjectTestPage() {
             {/* Test Cards */}
             <div style={{ display: 'grid', gap: 14 }}>
               {sub.tests.map((test, j) => (
-                <div key={j} style={{
-                  background: 'var(--card)', border: '1px solid var(--line)',
-                  borderRadius: 12, padding: '18px 22px',
-                  display: 'flex', alignItems: 'center', gap: 18,
-                  transition: 'all .15s', cursor: 'pointer',
+                <div key={j} className="responsive-test-card" style={{
                   borderLeft: `4px solid ${sub.color}`,
-                }}
-                  onMouseEnter={e => e.currentTarget.style.boxShadow = 'var(--sh-2)'}
-                  onMouseLeave={e => e.currentTarget.style.boxShadow = ''}
-                >
+                }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                       {test.free && (

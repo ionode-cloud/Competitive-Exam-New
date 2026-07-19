@@ -1,5 +1,5 @@
 // Header.jsx — MarqueeBanner + Top Row + MegaNav all in one component
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 /* ─── Marquee Banner ─── */
@@ -51,7 +51,6 @@ const TABS = [
       { label: 'Teaching',         icon: '📚', desc: 'OTET, OSSTET & school teacher papers' }
     ]
   },
- 
   { 
     label: 'Moke Test',  
     to: '/mock-test',  
@@ -105,35 +104,116 @@ const TABS = [
 
 function MegaNav() {
   const location = useLocation();
+  const [openTab, setOpenTab] = useState(null); // index of open dropdown
+  const [dropdownStyle, setDropdownStyle] = useState({});
+  const tabRefs = useRef([]);
+
+  // Close dropdown when clicking outside
+  const handleClickOutside = useCallback((e) => {
+    if (!e.target.closest('.nav-tab-container') && !e.target.closest('.mobile-dropdown-panel')) {
+      setOpenTab(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
+  // Close on route change
+  useEffect(() => { setOpenTab(null); }, [location.pathname]);
+
+  const toggleDropdown = (i, e) => {
+    e.preventDefault();
+    if (openTab === i) {
+      setOpenTab(null);
+      return;
+    }
+    const rect = tabRefs.current[i]?.getBoundingClientRect();
+    if (rect) {
+      const isMobile = window.innerWidth <= 768;
+      setDropdownStyle(
+        isMobile
+          ? {
+              position: 'fixed',
+              top: rect.bottom + 4,
+              left: 8,
+              right: 8,
+              width: 'auto',
+              zIndex: 9999,
+            }
+          : {
+              position: 'fixed',
+              top: rect.bottom + 4,
+              left: Math.max(0, rect.left),
+              width: 260,
+              zIndex: 9999,
+            }
+      );
+    }
+    setOpenTab(i);
+  };
+
+  const currentOpenTab = openTab !== null ? TABS[openTab] : null;
+
   return (
-    <nav className="mega-nav">
-      <div className="wrap">
-        {TABS.map((tab, i) => (
-          <div key={i} className="nav-tab-container">
+    <>
+      <nav className="mega-nav">
+        <div className="wrap">
+          {TABS.map((tab, i) => (
+            <div key={i} className="nav-tab-container" ref={el => tabRefs.current[i] = el}>
+              {tab.categories ? (
+                // Tabs with dropdowns: toggle on click/tap
+                <button
+                  className={`nav-tab nav-tab-btn${location.pathname === tab.to ? ' active' : ''}${openTab === i ? ' tab-open' : ''}`}
+                  onClick={(e) => toggleDropdown(i, e)}
+                  aria-expanded={openTab === i}
+                >
+                  {tab.label}
+                  <span className={`nav-arrow${openTab === i ? ' rotated' : ''}`}>▾</span>
+                  {tab.badge && <span className="badge-new">{tab.badge}</span>}
+                </button>
+              ) : (
+                // Plain link tabs
+                <Link
+                  to={tab.to}
+                  className={`nav-tab${location.pathname === tab.to ? ' active' : ''}`}
+                >
+                  {tab.label}
+                  {tab.badge && <span className="badge-new">{tab.badge}</span>}
+                </Link>
+              )}
+            </div>
+          ))}
+        </div>
+      </nav>
+
+      {/* Dropdown panel rendered outside nav to avoid overflow clipping */}
+      {openTab !== null && currentOpenTab?.categories && (
+        <div className="mobile-dropdown-panel" style={dropdownStyle}>
+          {/* Arrow pointer (desktop only) */}
+          <div className="dropdown-arrow-tip" />
+          {currentOpenTab.categories.map((cat, j) => (
             <Link
-              to={tab.to}
-              className={`nav-tab${location.pathname === tab.to ? ' active' : ''}`}
+              key={j}
+              to={currentOpenTab.to}
+              className="dropdown-item"
+              onClick={() => setOpenTab(null)}
             >
-              {tab.label}
-              {tab.arrow && <span className="nav-arrow">▾</span>}
-              {tab.badge && <span className="badge-new">{tab.badge}</span>}
-            </Link>
-            {tab.categories && (
-              <div className="nav-tab-dropdown">
-                {tab.categories.map((cat, j) => (
-                  <Link key={j} to={tab.to} className="dropdown-item">
-                    <div>
-                      <div className="dropdown-item-title">{cat.label}</div>
-                      <div className="dropdown-item-desc">{cat.desc}</div>
-                    </div>
-                  </Link>
-                ))}
+              <span style={{ fontSize: 18, flexShrink: 0 }}>{cat.icon}</span>
+              <div>
+                <div className="dropdown-item-title">{cat.label}</div>
+                <div className="dropdown-item-desc">{cat.desc}</div>
               </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </nav>
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 

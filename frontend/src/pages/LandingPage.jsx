@@ -189,7 +189,7 @@ function ExamSectionPreview() {
     <section id="exam-section" style={{ background: '#fff', padding: '0' }}>
       <div className="wrap-full">
         <SectionHeader eyebrow="🎯 Exam Section" title="Explore Curated Exam Categories" linkTo="/exam-section" linkLabel="All Categories →" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px' }}>
+        <div className="exam-grid">
           {homeExamCategories.map((cat, i) => (
             <Link key={i} to="/exam-section" style={{ textDecoration: 'none' }}>
               <div className="exam-card-premium-v2" style={{ '--accent-color': cat.color }}>
@@ -367,7 +367,7 @@ function SubscriptionPreview() {
     <section id="subscription" style={{ background: '#fff', padding: '0' }}>
       <div className="wrap-full">
         <SectionHeader eyebrow="💎 Subscription" title="Choose the Luxury Plan for Ultimate Success" linkTo="/subscription" linkLabel="View All Subscriptions →" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', alignItems: 'stretch' }}>
+        <div className="pkg-grid" style={{ alignItems: 'stretch' }}>
           {homePackages.map((pkg, i) => (
             <div key={i} className={`pricing-card-premium ${pkg.highlight ? 'recommended' : ''}`} style={{ 
               background: pkg.bg, 
