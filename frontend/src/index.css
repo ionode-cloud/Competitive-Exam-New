@@ -502,7 +502,7 @@ header {
   border: 1.5px solid rgba(15, 23, 42, 0.08);
   border-radius: 18px;
   box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15);
-  padding: 10px;
+  padding: 0;
   box-sizing: border-box;
   animation: dropdownIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
@@ -515,7 +515,18 @@ header {
   height: 3px;
   background: linear-gradient(90deg, var(--primary) 0%, #EA7A1E 100%);
   border-radius: 0 0 18px 18px;
-  margin-top: 4px;
+  margin-top: 0;
+}
+/* On mobile: collapse multi-column to single column */
+@media (max-width: 768px) {
+  .mobile-dropdown-panel {
+    flex-direction: column !important;
+  }
+  .mobile-dropdown-panel > div {
+    flex: unset !important;
+    width: 100% !important;
+    border-right: none !important;
+  }
 }
 .dropdown-arrow-tip {
   display: none; /* shown via CSS on desktop */

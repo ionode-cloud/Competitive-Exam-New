@@ -1,18 +1,30 @@
 // ContactUsPage.jsx — Contact form + info
 import { useState } from 'react';
+import {
+  FaPhoneAlt,
+  FaEnvelope,
+  FaWhatsapp,
+  FaMapMarkerAlt,
+  FaYoutube,
+  FaTelegramPlane,
+  FaInstagram,
+  FaFacebook,
+  FaCheckCircle,
+  FaClock
+} from 'react-icons/fa';
 
 const contactInfo = [
-  { icon: '📞', label: 'Call Us', value: '+91 98765 43210', sub: 'Mon–Sat, 9 AM – 7 PM', color: '#1957D6', bg: '#EAF1FD' },
-  { icon: '✉️', label: 'Email Us', value: 'info@prephub.in', sub: 'Reply within 24 hours', color: '#0F9D58', bg: '#E8F8EE' },
-  { icon: '💬', label: 'WhatsApp', value: '+91 98765 43210', sub: 'Chat instantly', color: '#0F9D58', bg: '#E8F8EE' },
-  { icon: '📍', label: 'Office Address', value: 'PrepHub HQ, Bhubaneswar', sub: 'Odisha – 751001, India', color: '#7C3AED', bg: '#F3ECFE' },
+  { icon: <FaPhoneAlt />, label: 'Call Us', value: '+91 98765 43210', sub: 'Mon–Sat, 9 AM – 7 PM', color: '#1957D6', bg: '#EAF1FD' },
+  { icon: <FaEnvelope />, label: 'Email Us', value: 'info@prephub.in', sub: 'Reply within 24 hours', color: '#0F9D58', bg: '#E8F8EE' },
+  { icon: <FaWhatsapp />, label: 'WhatsApp', value: '+91 98765 43210', sub: 'Chat instantly', color: '#0F9D58', bg: '#E8F8EE' },
+  { icon: <FaMapMarkerAlt />, label: 'Office Address', value: 'PrepHub HQ, Bhubaneswar', sub: 'Odisha – 751001, India', color: '#7C3AED', bg: '#F3ECFE' },
 ];
 
 const socials = [
-  { icon: '▶️', name: 'YouTube', handle: '@PrepHubOdisha', color: '#B4232F', bg: '#FCEBEA', link: '#' },
-  { icon: '✈️', name: 'Telegram', handle: 't.me/PrepHubOdisha', color: '#1957D6', bg: '#EAF1FD', link: '#' },
-  { icon: '📷', name: 'Instagram', handle: '@prephub.in', color: '#7C3AED', bg: '#F3ECFE', link: '#' },
-  { icon: '👥', name: 'Facebook', handle: 'PrepHub Odisha', color: '#1957D6', bg: '#EAF1FD', link: '#' },
+  { icon: <FaYoutube />, name: 'YouTube', handle: '@PrepHubOdisha', color: '#B4232F', bg: '#FCEBEA', link: '#' },
+  { icon: <FaTelegramPlane />, name: 'Telegram', handle: 't.me/PrepHubOdisha', color: '#1957D6', bg: '#EAF1FD', link: '#' },
+  { icon: <FaInstagram />, name: 'Instagram', handle: '@prephub.in', color: '#7C3AED', bg: '#F3ECFE', link: '#' },
+  { icon: <FaFacebook />, name: 'Facebook', handle: 'PrepHub Odisha', color: '#1957D6', bg: '#EAF1FD', link: '#' },
 ];
 
 export default function ContactUsPage() {
@@ -37,22 +49,26 @@ export default function ContactUsPage() {
   return (
     <div style={{ minHeight: '80vh', background: 'var(--bg)' }}>
       {/* Hero */}
-      <div style={{ background: 'linear-gradient(135deg, rgb(15, 23, 42), rgba(234, 122, 30, 0.133))', padding: '44px 0 36px' }}>
+      <div style={{ background: 'linear-gradient(135deg, rgb(15, 23, 42), rgba(234, 122, 30, 0.133))', padding: '22px 0 18px' }}>
         <div className="wrap">
-          <div className="eyebrow" style={{ color: '#FDE68A' }}>Contact Us</div>
-          <h1 style={{ fontFamily: 'var(--disp)', fontSize: 'clamp(24px,3.5vw,36px)', color: '#fff', margin: '8px 0 10px' }}>
-            Get In Touch With Us
-          </h1>
-          <p style={{ color: '#94A3B8', fontSize: 14, maxWidth: '52ch', lineHeight: 1.7 }}>
-            Have questions? We're here to help you on your exam journey — Mon to Sat, 9 AM–7 PM.
-          </p>
-          <div style={{ display: 'flex', gap: 16, marginTop: 18, flexWrap: 'wrap' }}>
-            {[{ n: '📞', l: 'Call Support' }, { n: '✉️', l: 'Email Us' }, { n: '24h', l: 'Reply Time' }].map((s, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 10, padding: '10px 18px', textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--disp)', fontSize: 20, fontWeight: 800, color: '#FFC93C' }}>{s.n}</div>
-                <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>{s.l}</div>
-              </div>
-            ))}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32, flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <div className="eyebrow" style={{ color: '#FDE68A' }}>Contact Us</div>
+              <h1 style={{ fontFamily: 'var(--disp)', fontSize: 'clamp(20px,2.8vw,30px)', color: '#fff', margin: '6px 0 8px' }}>
+                Get In Touch With Us
+              </h1>
+              <p style={{ color: '#94A3B8', fontSize: 13.5, maxWidth: '52ch', lineHeight: 1.6, margin: 0 }}>
+                Have questions? We're here to help you on your exam journey — Mon to Sat, 9 AM–7 PM.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', paddingTop: 6 }}>
+              {[{ icon: <FaPhoneAlt />, l: 'Call Support' }, { icon: <FaEnvelope />, l: 'Email Us' }, { icon: <FaClock />, l: 'Reply Time' }].map((s, i) => (
+                <div key={i} style={{ textAlign: 'center', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, padding: '10px 16px', minWidth: 72 }}>
+                  <div style={{ fontFamily: 'var(--disp)', fontSize: 18, fontWeight: 900, color: '#FFC93C', lineHeight: 1, display: 'flex', justifyContent: 'center' }}>{s.icon}</div>
+                  <div style={{ fontSize: 10.5, color: '#CBD5E1', marginTop: 4, letterSpacing: 0.4 }}>{s.l}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -70,7 +86,7 @@ export default function ContactUsPage() {
               onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-3px)'}
               onMouseLeave={e => e.currentTarget.style.transform = ''}
             >
-              <div style={{ fontSize: 32, marginBottom: 10 }}>{info.icon}</div>
+              <div style={{ fontSize: 26, color: info.color, marginBottom: 10, display: 'flex', justifyContent: 'center' }}>{info.icon}</div>
               <div style={{ fontSize: 11, fontWeight: 700, color: info.color, letterSpacing: 1, marginBottom: 6 }}>{info.label}</div>
               <div style={{ fontSize: 14, fontWeight: 800, color: info.color, marginBottom: 4 }}>{info.value}</div>
               <div style={{ fontSize: 11.5, color: info.color, opacity: .7 }}>{info.sub}</div>
@@ -88,9 +104,10 @@ export default function ContactUsPage() {
             {sent && (
               <div style={{
                 background: '#E8F8EE', border: '1.5px solid #0F9D58', borderRadius: 10,
-                padding: '12px 18px', marginBottom: 20, color: '#0F9D58', fontWeight: 700, fontSize: 14
+                padding: '12px 18px', marginBottom: 20, color: '#0F9D58', fontWeight: 700, fontSize: 14,
+                display: 'flex', alignItems: 'center', gap: 8
               }}>
-                ✅ Message sent! We'll reply soon.
+                <FaCheckCircle /> Message sent! We'll reply soon.
               </div>
             )}
 
@@ -162,7 +179,7 @@ export default function ContactUsPage() {
                     onMouseEnter={e => e.currentTarget.style.transform = 'translateX(4px)'}
                     onMouseLeave={e => e.currentTarget.style.transform = ''}
                   >
-                    <span style={{ fontSize: 22 }}>{s.icon}</span>
+                    <span style={{ fontSize: 20, color: s.color, display: 'flex', alignItems: 'center' }}>{s.icon}</span>
                     <div>
                       <div style={{ fontWeight: 800, color: s.color, fontSize: 13 }}>{s.name}</div>
                       <div style={{ fontSize: 11.5, color: s.color, opacity: .75 }}>{s.handle}</div>

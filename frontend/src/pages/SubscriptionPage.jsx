@@ -1,5 +1,13 @@
 // SubscriptionPage.jsx — Subscription & Pricing plans
 import { useState } from 'react';
+import {
+  FaFileAlt,
+  FaClipboardList,
+  FaVideo,
+  FaTrophy,
+  FaCheck,
+  FaTimes
+} from 'react-icons/fa';
 
 const plans = [
   {
@@ -62,10 +70,10 @@ const plans = [
 ];
 
 const combos = [
-  { name: 'PDF Course Bundle', price: '₹3,999', orig: '₹7,999', icon: '📄', color: '#1957D6', bg: '#EAF1FD', items: ['All Subject PDFs', 'PYQ E-Books', 'Free Updates 1 Year'] },
-  { name: 'Test Series Pack', price: '₹1,299', orig: '₹2,999', icon: '📝', color: '#0F9D58', bg: '#E8F8EE', items: ['100+ Mock Tests', 'All-India Rank', 'Detailed Analysis'] },
-  { name: 'Live Batch + Materials', price: '₹4,999', orig: '₹9,999', icon: '🎥', color: '#7C3AED', bg: '#F3ECFE', items: ['60 Live Classes', 'Class Recordings', 'Study Notes'] },
-  { name: 'All-in-One Super Plan', price: '₹7,999', orig: '₹19,999', icon: '🏆', color: '#B4232F', bg: '#FCEBEA', items: ['Everything in Super', '6 Months Access', 'Priority Support'] },
+  { name: 'PDF Course Bundle', price: '₹3,999', orig: '₹7,999', icon: <FaFileAlt />, color: '#1957D6', bg: '#EAF1FD', items: ['All Subject PDFs', 'PYQ E-Books', 'Free Updates 1 Year'] },
+  { name: 'Test Series Pack', price: '₹1,299', orig: '₹2,999', icon: <FaClipboardList />, color: '#0F9D58', bg: '#E8F8EE', items: ['100+ Mock Tests', 'All-India Rank', 'Detailed Analysis'] },
+  { name: 'Live Batch + Materials', price: '₹4,999', orig: '₹9,999', icon: <FaVideo />, color: '#7C3AED', bg: '#F3ECFE', items: ['60 Live Classes', 'Class Recordings', 'Study Notes'] },
+  { name: 'All-in-One Super Plan', price: '₹7,999', orig: '₹19,999', icon: <FaTrophy />, color: '#B4232F', bg: '#FCEBEA', items: ['Everything in Super', '6 Months Access', 'Priority Support'] },
 ];
 
 export default function SubscriptionPage() {
@@ -74,36 +82,40 @@ export default function SubscriptionPage() {
   return (
     <div style={{ minHeight: '80vh', background: 'var(--bg)' }}>
       {/* Hero */}
-      <div style={{ background: 'linear-gradient(135deg, rgb(15, 23, 42), rgba(234, 122, 30, 0.133))', padding: '44px 0 36px' }}>
+      <div style={{ background: 'linear-gradient(135deg, rgb(15, 23, 42), rgba(234, 122, 30, 0.133))', padding: '22px 0 18px' }}>
         <div className="wrap">
-          <div className="eyebrow" style={{ color: '#FDE68A' }}>Subscription</div>
-          <h1 style={{ fontFamily: 'var(--disp)', fontSize: 'clamp(24px,3.5vw,36px)', color: '#fff', margin: '8px 0 10px' }}>
-            Choose Your Plan
-          </h1>
-          <p style={{ color: '#94A3B8', fontSize: 14, maxWidth: '52ch', lineHeight: 1.7, marginBottom: 18 }}>
-            Invest in your preparation — unlock everything you need to crack the exam.
-          </p>
-          <div style={{ display: 'flex', gap: 16, marginBottom: 22, flexWrap: 'wrap' }}>
-            {[{ n: '3', l: 'Plans' }, { n: '4', l: 'Combo Packs' }, { n: '40%', l: 'Yearly Savings' }].map((s, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 10, padding: '10px 18px', textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--disp)', fontSize: 20, fontWeight: 800, color: '#FFC93C' }}>{s.n}</div>
-                <div style={{ fontSize: 11, color: '#94A3B8', marginTop: 2 }}>{s.l}</div>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 32, flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <div className="eyebrow" style={{ color: '#FDE68A' }}>Subscription</div>
+              <h1 style={{ fontFamily: 'var(--disp)', fontSize: 'clamp(20px,2.8vw,30px)', color: '#fff', margin: '6px 0 8px' }}>
+                Choose Your Plan
+              </h1>
+              <p style={{ color: '#94A3B8', fontSize: 13.5, maxWidth: '52ch', lineHeight: 1.6, margin: '0 0 14px' }}>
+                Invest in your preparation — unlock everything you need to crack the exam.
+              </p>
+              {/* Toggle */}
+              <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,.15)', borderRadius: 30, padding: 4 }}>
+                {['monthly', 'yearly'].map(b => (
+                  <button key={b} onClick={() => setBilling(b)} style={{
+                    padding: '7px 20px', borderRadius: 26, border: 'none',
+                    background: billing === b ? '#fff' : 'transparent',
+                    color: billing === b ? '#1a1f35' : '#fff',
+                    fontWeight: 800, fontSize: 13, cursor: 'pointer', transition: 'all .2s',
+                  }}>
+                    {b === 'monthly' ? 'Monthly' : 'Yearly'}
+                    {b === 'yearly' && <span style={{ marginLeft: 6, background: '#0F9D58', color: '#fff', fontSize: 10, padding: '1px 6px', borderRadius: 10, fontWeight: 800 }}>SAVE 40%</span>}
+                  </button>
+                ))}
               </div>
-            ))}
-          </div>
-          {/* Toggle */}
-          <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,.15)', borderRadius: 30, padding: 4 }}>
-            {['monthly', 'yearly'].map(b => (
-              <button key={b} onClick={() => setBilling(b)} style={{
-                padding: '8px 24px', borderRadius: 26, border: 'none',
-                background: billing === b ? '#fff' : 'transparent',
-                color: billing === b ? '#1a1f35' : '#fff',
-                fontWeight: 800, fontSize: 13.5, cursor: 'pointer', transition: 'all .2s',
-              }}>
-                {b === 'monthly' ? 'Monthly' : 'Yearly'}
-                {b === 'yearly' && <span style={{ marginLeft: 6, background: '#0F9D58', color: '#fff', fontSize: 10, padding: '1px 6px', borderRadius: 10, fontWeight: 800 }}>SAVE 40%</span>}
-              </button>
-            ))}
+            </div>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', paddingTop: 6 }}>
+              {[{ n: '3', l: 'Plans' }, { n: '4', l: 'Combo Packs' }, { n: '40%', l: 'Yearly Savings' }].map((s, i) => (
+                <div key={i} style={{ textAlign: 'center', background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, padding: '10px 16px', minWidth: 72 }}>
+                  <div style={{ fontFamily: 'var(--disp)', fontSize: 20, fontWeight: 900, color: '#FFC93C', lineHeight: 1 }}>{s.n}</div>
+                  <div style={{ fontSize: 10.5, color: '#CBD5E1', marginTop: 4, letterSpacing: 0.4 }}>{s.l}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -155,7 +167,9 @@ export default function SubscriptionPage() {
                       fontSize: 10, fontWeight: 900,
                       color: f.ok ? (plan.highlight ? '#fff' : plan.color) : (plan.highlight ? 'rgba(255,255,255,.4)' : 'var(--muted-2)'),
                       flexShrink: 0,
-                    }}>{f.ok ? '✓' : '✕'}</span>
+                    }}>
+                      {f.ok ? <FaCheck /> : <FaTimes />}
+                    </span>
                     {f.text}
                   </div>
                 ))}
@@ -194,11 +208,13 @@ export default function SubscriptionPage() {
                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-3px)'}
                 onMouseLeave={e => e.currentTarget.style.transform = ''}
               >
-                <div style={{ fontSize: 30, marginBottom: 12 }}>{combo.icon}</div>
+                <div style={{ fontSize: 26, color: combo.color, marginBottom: 12, display: 'flex' }}>{combo.icon}</div>
                 <h3 style={{ margin: '0 0 6px', fontSize: 15.5, fontWeight: 800, color: combo.color }}>{combo.name}</h3>
                 <div style={{ marginBottom: 14 }}>
                   {combo.items.map((item, j) => (
-                    <div key={j} style={{ fontSize: 12.5, color: combo.color, opacity: .8, marginBottom: 3 }}>✓ {item}</div>
+                    <div key={j} style={{ fontSize: 12.5, color: combo.color, opacity: .8, marginBottom: 3, display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <FaCheck fontSize={10} /> {item}
+                    </div>
                   ))}
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>

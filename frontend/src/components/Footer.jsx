@@ -1,13 +1,31 @@
 // Footer.jsx — Professional multi-column footer
 import '../footer.css';
+import {
+  FaYoutube,
+  FaTelegramPlane,
+  FaWhatsapp,
+  FaInstagram,
+  FaLinkedin,
+  FaPhoneAlt,
+  FaEnvelope,
+  FaMapMarkerAlt,
+  FaBell,
+  FaHeart,
+} from 'react-icons/fa';
+
+const socials = [
+  { icon: <FaYoutube />, label: 'YouTube', href: '#' },
+  { icon: <FaTelegramPlane />, label: 'Telegram', href: '#' },
+  { icon: <FaWhatsapp />, label: 'WhatsApp', href: '#' },
+  { icon: <FaInstagram />, label: 'Instagram', href: '#' },
+  { icon: <FaLinkedin />, label: 'LinkedIn', href: '#' },
+];
 
 const quickLinks = [
   { label: 'Home',            href: '#' },
   { label: 'About Us',        href: '#' },
   { label: 'All Courses',     href: '#' },
   { label: 'Test Series',     href: '#tests' },
-  { label: 'Free Mock Tests', href: '#mocks' },
-  { label: 'Current Affairs', href: '#current-affairs' },
   { label: 'Contact Us',      href: '#' },
 ];
 
@@ -16,8 +34,6 @@ const examLinks = [
   { label: 'OPSC OAS',            href: '#' },
   { label: 'Odisha Police SI',     href: '#' },
   { label: 'OSSC CGL',            href: '#' },
-  { label: 'SSC CGL / CHSL',      href: '#' },
-  { label: 'IBPS PO / Clerk',     href: '#' },
   { label: 'Railway NTPC',         href: '#' },
 ];
 
@@ -26,25 +42,12 @@ const resourceLinks = [
   { label: 'PYQ Papers',          href: '#pyq' },
   { label: 'Live Batches',        href: '#live' },
   { label: 'Video Lectures',      href: '#subjects' },
-  { label: 'Practice Quiz',       href: '#mocks' },
-  { label: 'Exam Notifications',  href: '#' },
   { label: 'Admit Card Alerts',   href: '#' },
-];
-
-
-const socials = [
-  { icon: '▶️', label: 'YouTube',   href: '#' },
-  { icon: '✈️', label: 'Telegram',  href: '#' },
-  { icon: '💬', label: 'WhatsApp',  href: '#' },
-  { icon: '📷', label: 'Instagram', href: '#' },
-  { icon: '🐦', label: 'Twitter',   href: '#' },
-  { icon: '💼', label: 'LinkedIn',  href: '#' },
 ];
 
 export default function Footer() {
   return (
     <footer className="pro-footer">
-
       {/* ── Main columns ── */}
       <div className="footer-main">
 
@@ -67,29 +70,6 @@ export default function Footer() {
                 {s.icon}
               </a>
             ))}
-          </div>
-
-          {/* Contact mini */}
-          <div className="footer-contact-mini">
-            <a href="tel:+919876543210">
-              <span className="fc-icon">📞</span>
-              +91 98765 43210
-            </a>
-            <a href="mailto:info@prephub.in">
-              <span className="fc-icon">✉️</span>
-              info@prephub.in
-            </a>
-            <a href="#">
-              <span className="fc-icon">📍</span>
-              Bhubaneswar, Odisha — 751001
-            </a>
-          </div>
-
-          {/* Trust badges */}
-          <div className="footer-badges">
-            <span className="footer-badge">🔒 Secure Payments</span>
-            <span className="footer-badge">✅ ISO Certified</span>
-            <span className="footer-badge">🏅 Award Winning</span>
           </div>
         </div>
 
@@ -126,23 +106,28 @@ export default function Footer() {
         {/* Newsletter */}
         <div className="footer-newsletter-col">
           <h4>Stay Updated</h4>
-          <p>
-            Get exam notifications, free PDFs, and daily current affairs
-            straight to your inbox. Join 2 lakh+ aspirants!
-          </p>
+          <div className="footer-contact-mini">
+            <a href="tel:+919876543210">
+              <span className="fc-icon"><FaPhoneAlt /></span>
+              +91 98765 43210 
+            </a>
+            <a href="mailto:info@prephub.in">
+              <span className="fc-icon"><FaEnvelope /></span>
+              info@prephub.in
+            </a>
+            <a href="#">
+              <span className="fc-icon"><FaMapMarkerAlt /></span>
+              Bhubaneswar, Odisha — 751001
+            </a><br/>
+          </div>
           <div className="newsletter-form">
-            <input
-              className="newsletter-input"
-              type="email"
-              placeholder="Enter your email address"
-            />
             <input
               className="newsletter-input"
               type="tel"
               placeholder="Mobile number (optional)"
             />
             <button className="newsletter-btn">
-              🔔 Subscribe Now
+              <FaBell style={{ marginRight: 6 }} /> Subscribe Now
             </button>
           </div>
         </div>
@@ -151,7 +136,7 @@ export default function Footer() {
       {/* ── Bottom bar ── */}
       <div className="footer-bottom">
         <div className="footer-bottom-left">
-          © 2026 PrepHub. Made with <span className="heart">♥</span> for
+          © 2026 PrepHub. Made with <span className="heart"><FaHeart /></span> for
           Odisha aspirants. All rights reserved.
         </div>
         <div className="footer-bottom-right">
