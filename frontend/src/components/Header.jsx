@@ -1,6 +1,7 @@
-// Header.jsx — MarqueeBanner + Top Row + MegaNav all in one component
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../admin/context/AuthContext';
+import api from '../admin/api/axios';
 import {
   FaPhoneAlt,
   FaUniversity,
@@ -18,14 +19,16 @@ import {
   FaFileAlt,
   FaSearch,
   FaUser,
-  FaGift,
-  FaClock,
   FaTimes,
-  FaExclamationTriangle,
   FaCheckCircle,
-  FaCopy,
-  FaCheck,
-  FaTag
+  FaEye,
+  FaEyeSlash,
+  FaClipboardList,
+  FaTrophy,
+  FaChartBar,
+  FaCreditCard,
+  FaSignOutAlt,
+  FaExclamationTriangle,
 } from 'react-icons/fa';
 
 /* ─── Marquee Banner ─── */
@@ -150,7 +153,7 @@ function MegaNav() {
 
   useEffect(() => { setOpenTab(null); }, [location.pathname]);
 
-  const ITEMS_PER_COL = 5;
+  const ITEMS_PER_COL = 10;
 
   const toggleDropdown = (i, e) => {
     e.preventDefault();
@@ -276,7 +279,10 @@ function MegaNav() {
 }
 
 export default function Header() {
-  const [secs, setSecs] = useState(11 * 3600 + 31 * 60 + 39);
+  const { user: authUser, login: authLogin, logout: authLogout } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -285,33 +291,28 @@ export default function Header() {
   const [authForm, setAuthForm] = useState({ name: '', email: '', phone: '', password: '', terms: false });
   const [authError, setAuthError] = useState('');
   const [authSuccess, setAuthSuccess] = useState('');
+  const [showModalPwd, setShowModalPwd] = useState(false);
 
-  // New Year Sale Coupon Modal states
-  const [showSaleModal, setShowSaleModal] = useState(false);
-  const [couponCopied, setCouponCopied] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState('pro');
-  const [couponMessage, setCouponMessage] = useState('');
 
+  // Sync auth user
   useEffect(() => {
-    const id = setInterval(() => setSecs(p => (p > 0 ? p - 1 : 0)), 1000);
-    return () => clearInterval(id);
-  }, []);
+    setUser(authUser);
+  }, [authUser]);
 
+  // Open login modal if URL has ?login=true or /login
   useEffect(() => {
-    const checkUser = () => {
-      const u = localStorage.getItem('user');
-      setUser(u ? JSON.parse(u) : null);
-    };
-    checkUser();
-    window.addEventListener('storage', checkUser);
-    return () => window.removeEventListener('storage', checkUser);
-  }, []);
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.get('login') === 'true') {
+      setShowAuthModal(true);
+      setAuthMode('login');
+    }
+  }, [location.search]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await authLogout();
     setUser(null);
     setShowDropdown(false);
-    window.dispatchEvent(new Event('storage'));
+    navigate('/');
   };
 
   const handleAuthChange = e => {
@@ -322,7 +323,7 @@ export default function Header() {
     }));
   };
 
-  const handleAuthSubmit = e => {
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthError('');
     setAuthSuccess('');
@@ -332,22 +333,27 @@ export default function Header() {
         setAuthError('Please fill in all fields.');
         return;
       }
-      const nameFromEmail = authForm.email.split('@')[0];
-      const displayName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
-      const userData = {
-        name: displayName === 'Mukesh' ? 'Mukesh' : displayName,
-        email: authForm.email,
-        isLoggedIn: true
-      };
-      localStorage.setItem('user', JSON.stringify(userData));
-      setAuthSuccess('Logged in successfully!');
-      setUser(userData);
-      window.dispatchEvent(new Event('storage'));
-      setTimeout(() => {
-        setShowAuthModal(false);
-        setAuthSuccess('');
-        setAuthForm({ name: '', email: '', phone: '', password: '', terms: false });
-      }, 1000);
+      try {
+        const loggedUser = await authLogin(authForm.email, authForm.password);
+        setAuthSuccess('Logged in successfully!');
+        const adminRoles = ['admin', 'superadmin', 'content_manager', 'question_creator', 'support'];
+        if (adminRoles.includes(loggedUser.role)) {
+          setTimeout(() => {
+            setShowAuthModal(false);
+            setAuthSuccess('');
+            setAuthForm({ name: '', email: '', phone: '', password: '', terms: false });
+            navigate('/admin/dashboard');
+          }, 400);
+        } else {
+          setTimeout(() => {
+            setShowAuthModal(false);
+            setAuthSuccess('');
+            setAuthForm({ name: '', email: '', phone: '', password: '', terms: false });
+          }, 800);
+        }
+      } catch (err) {
+        setAuthError(err.response?.data?.message || 'Invalid email or password.');
+      }
     } else {
       if (!authForm.name || !authForm.email || !authForm.phone || !authForm.password) {
         setAuthError('Please fill in all fields.');
@@ -357,17 +363,37 @@ export default function Header() {
         setAuthError('You must agree to the Terms & Conditions.');
         return;
       }
-      setAuthSuccess('Account created successfully! Switching to login...');
-      setTimeout(() => {
-        setAuthMode('login');
-        setAuthSuccess('');
-      }, 1500);
+      try {
+        await api.post('/auth/register', {
+          name: authForm.name,
+          email: authForm.email,
+          phone: authForm.phone,
+          password: authForm.password
+        });
+        const loggedUser = await authLogin(authForm.email, authForm.password);
+        setAuthSuccess('Account created successfully!');
+        const adminRoles = ['admin', 'superadmin', 'content_manager', 'question_creator', 'support'];
+        if (adminRoles.includes(loggedUser.role)) {
+          setTimeout(() => {
+            setShowAuthModal(false);
+            setAuthSuccess('');
+            setAuthForm({ name: '', email: '', phone: '', password: '', terms: false });
+            navigate('/admin/dashboard');
+          }, 400);
+        } else {
+          setTimeout(() => {
+            setShowAuthModal(false);
+            setAuthSuccess('');
+            setAuthForm({ name: '', email: '', phone: '', password: '', terms: false });
+            navigate('/profile');
+          }, 800);
+        }
+      } catch (err) {
+        setAuthError(err.response?.data?.message || 'Registration failed.');
+      }
     }
   };
 
-  const h = String(Math.floor(secs / 3600)).padStart(2, '0');
-  const m = String(Math.floor((secs % 3600) / 60)).padStart(2, '0');
-  const s = String(secs % 60).padStart(2, '0');
 
   return (
     <>
@@ -383,19 +409,6 @@ export default function Header() {
             <button className="search-btn">Search</button>
           </div>
           <div className="sale-cluster" style={{ position: 'relative' }}>
-            <div 
-              className="sale-text" 
-              onClick={() => setShowSaleModal(true)}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', cursor: 'pointer', userSelect: 'none' }}
-              title="Click to view & claim New Year Sale Coupon!"
-            >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                <FaGift style={{ color: '#F59E0B' }} /> New Year Sale is Live!
-              </span>
-              <span className="sale-timer" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                <FaClock /> {h}:{m}:{s}
-              </span>
-            </div>
             {user ? (
               <div style={{ position: 'relative' }}>
                 <div className="user-chip" onClick={() => setShowDropdown(!showDropdown)} style={{ cursor: 'pointer' }}>
@@ -405,21 +418,53 @@ export default function Header() {
                 {showDropdown && (
                   <div style={{
                     position: 'absolute', top: '100%', right: 0, marginTop: '8px',
-                    background: '#fff', border: '1px solid var(--line)', borderRadius: '10px',
-                    boxShadow: 'var(--sh-2)', width: '160px', zIndex: 100, display: 'flex', flexDirection: 'column', overflow: 'hidden'
+                    background: '#fff', border: '1px solid var(--line)', borderRadius: '12px',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.12)', width: '210px', zIndex: 100, display: 'flex', flexDirection: 'column', overflow: 'hidden'
                   }}>
-                    <div style={{ padding: '12px 14px', fontSize: '11px', color: 'var(--muted)', borderBottom: '1px solid var(--line)', wordBreak: 'break-all' }}>
+                    <div style={{ padding: '12px 14px', fontSize: '11px', color: 'var(--muted)', borderBottom: '1px solid var(--line)', wordBreak: 'break-all', textAlign: 'left' }}>
+                      <div style={{ fontWeight: 800, color: 'var(--ink)', fontSize: '12.5px' }}>{user.name || 'Student'}</div>
                       {user.email || 'user@prephub.in'}
                     </div>
+
+                    <Link to="/profile?tab=profile" onClick={() => setShowDropdown(false)} style={{ padding: '10px 14px', fontSize: '13px', color: 'var(--ink)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                      <FaUser style={{ color: 'var(--primary)' }} /> My Profile
+                    </Link>
+                    <Link to="/profile?tab=exams" onClick={() => setShowDropdown(false)} style={{ padding: '10px 14px', fontSize: '13px', color: 'var(--ink)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                      <FaClipboardList style={{ color: '#3B82F6' }} /> Exam Attend
+                    </Link>
+                    <Link to="/profile?tab=rank" onClick={() => setShowDropdown(false)} style={{ padding: '10px 14px', fontSize: '13px', color: 'var(--ink)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                      <FaTrophy style={{ color: '#F59E0B' }} /> Rank
+                    </Link>
+                    <Link to="/profile?tab=scoreboard" onClick={() => setShowDropdown(false)} style={{ padding: '10px 14px', fontSize: '13px', color: 'var(--ink)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                      <FaChartBar style={{ color: '#10B981' }} /> Score Board
+                    </Link>
+                    <Link to="/profile?tab=purchase" onClick={() => setShowDropdown(false)} style={{ padding: '10px 14px', fontSize: '13px', color: 'var(--ink)', fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left', borderBottom: '1px solid rgba(0,0,0,0.04)' }}>
+                      <FaCreditCard style={{ color: '#7C3AED' }} /> Purchases &amp; Orders
+                    </Link>
+
+                    {['admin', 'superadmin', 'content_manager', 'question_creator', 'support'].includes(user.role) && (
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setShowDropdown(false)}
+                        style={{
+                          padding: '10px 14px', fontSize: '13px', color: '#2563eb', fontWeight: 800,
+                          textDecoration: 'none', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', gap: 8,
+                          background: '#eff6ff', textAlign: 'left'
+                        }}
+                      >
+                        <FaShieldAlt style={{ color: '#2563eb' }} /> Admin Panel
+                      </Link>
+                    )}
+
                     <button onClick={handleLogout} style={{
-                      padding: '10px 14px', background: 'none', border: 'none', textAlign: 'left',
-                      fontSize: '13px', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer',
-                      transition: 'background .15s'
+                      padding: '10px 14px', background: 'none', border: 'none', borderTop: '1px solid var(--line)', textAlign: 'left',
+                      fontSize: '13px', color: '#EF4444', fontWeight: 700, cursor: 'pointer',
+                      transition: 'background .15s', display: 'flex', alignItems: 'center', gap: 8
                     }}
-                    onMouseEnter={e => e.target.style.background = 'var(--bg)'}
+                    onMouseEnter={e => e.target.style.background = '#FCEBEA'}
                     onMouseLeave={e => e.target.style.background = 'transparent'}
                     >
-                      Logout
+                      <FaSignOutAlt style={{ color: '#EF4444' }} /> Logout
                     </button>
                   </div>
                 )}
@@ -434,170 +479,7 @@ export default function Header() {
         <MegaNav />
       </header>
 
-      {/* New Year Sale Coupon Popup Form Modal */}
-      {showSaleModal && (
-        <div className="auth-modal-overlay" onClick={() => setShowSaleModal(false)}>
-          <div className="auth-modal-card" onClick={e => e.stopPropagation()} style={{ maxWidth: '460px', padding: 0, overflow: 'hidden', borderRadius: '16px' }}>
-            {/* Modal Header */}
-            <div style={{
-              background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 100%)',
-              padding: '24px 24px 20px', color: '#fff', position: 'relative'
-            }}>
-              <button 
-                onClick={() => setShowSaleModal(false)} 
-                style={{
-                  position: 'absolute', top: 16, right: 16,
-                  background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '50%',
-                  width: '28px', height: '28px', color: '#fff', fontSize: '13px', fontWeight: '800',
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}
-              >
-                <FaTimes />
-              </button>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#FFC93C', fontSize: '11.5px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>
-                <FaGift /> Festive Special Offer
-              </div>
-              <h2 style={{ fontSize: '22px', fontWeight: 900, margin: '6px 0 4px', color: '#fff', letterSpacing: '-0.5px', textAlign: 'left' }}>
-                🎉 New Year Sale is Live!
-              </h2>
-              <p style={{ fontSize: '13px', color: '#94A3B8', margin: 0, textAlign: 'left' }}>
-                Get flat 50% discount on all premium test series &amp; study material plans.
-              </p>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                background: 'rgba(245, 158, 11, 0.2)', border: '1px solid rgba(245, 158, 11, 0.4)',
-                color: '#FFC93C', fontSize: '12px', fontWeight: 800, padding: '4px 12px', borderRadius: '20px', marginTop: '12px'
-              }}>
-                <FaClock /> Offer Ends In: {h}h {m}m {s}s
-              </div>
-            </div>
 
-            {/* Modal Body */}
-            <div style={{ padding: '24px' }}>
-              {/* Coupon Code Banner Box */}
-              <div style={{
-                background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)',
-                border: '2px dashed #F59E0B', borderRadius: '12px', padding: '16px 20px',
-                marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-              }}>
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#92400E', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                    Your Special Coupon Code
-                  </div>
-                  <div style={{ fontSize: '22px', fontWeight: 900, color: '#78350F', letterSpacing: '1.5px', marginTop: '2px' }}>
-                    NEWYEAR50
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText('NEWYEAR50');
-                    setCouponCopied(true);
-                    setTimeout(() => setCouponCopied(false), 2000);
-                  }}
-                  style={{
-                    padding: '8px 16px', background: '#D97706', color: '#fff',
-                    border: 'none', borderRadius: '8px', fontWeight: 800, fontSize: '12.5px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6,
-                    boxShadow: '0 2px 8px rgba(217, 119, 6, 0.3)', transition: 'all 0.15s'
-                  }}
-                >
-                  {couponCopied ? <><FaCheck /> Copied!</> : <><FaCopy /> Copy Code</>}
-                </button>
-              </div>
-
-              {/* Benefits list */}
-              <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-                <div style={{ fontSize: '11px', fontWeight: 800, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px' }}>
-                  WHAT YOU GET WITH THIS COUPON:
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {[
-                    'Flat 50% instant discount on all subscription packages',
-                    'Free PYQ E-Book Library Access (Worth ₹999)',
-                    '100+ Full Length & Subject-Wise Mock Test Series',
-                    'All Odisha Exams: OSSSC, OPSC OAS, OSSC CGL & Police SI'
-                  ].map((benefit, bIdx) => (
-                    <div key={bIdx} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12.5px', color: 'var(--ink)', fontWeight: 600 }}>
-                      <span style={{ color: '#0F9D58', fontWeight: 900, display: 'flex', alignItems: 'center' }}><FaCheckCircle /></span>
-                      <span>{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quick Claim Form */}
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                setCouponMessage('Coupon NEWYEAR50 applied successfully! Redirecting to plans...');
-                setTimeout(() => {
-                  setShowSaleModal(false);
-                  setCouponMessage('');
-                  window.location.href = '/subscription';
-                }, 1200);
-              }}>
-                <div style={{ marginBottom: '14px', textAlign: 'left' }}>
-                  <label style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--muted)', marginBottom: '4px', display: 'block' }}>Applied Coupon Code</label>
-                  <div style={{ position: 'relative' }}>
-                    <input 
-                      type="text" 
-                      value="NEWYEAR50" 
-                      readOnly 
-                      style={{
-                        width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid #F59E0B',
-                        background: '#FFFBEB', fontSize: '14px', fontWeight: '800', color: '#92400E', outline: 'none', boxSizing: 'border-box'
-                      }} 
-                    />
-                    <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: '#0F9D58', fontWeight: '800', fontSize: '12px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <FaTag /> 50% OFF
-                    </span>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: '16px', textAlign: 'left' }}>
-                  <label style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--muted)', marginBottom: '4px', display: 'block' }}>Select Subscription Plan</label>
-                  <select
-                    value={selectedPlan}
-                    onChange={e => setSelectedPlan(e.target.value)}
-                    style={{
-                      width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1.5px solid var(--line)',
-                      background: '#f8fafc', fontSize: '13.5px', fontWeight: '700', color: 'var(--ink)', outline: 'none', boxSizing: 'border-box'
-                    }}
-                  >
-                    <option value="starter">Starter Plan — ₹249 (Reg. ₹499)</option>
-                    <option value="pro">Pro Package (Best Value) — ₹749 (Reg. ₹1,499)</option>
-                    <option value="super">Super Access — ₹1,499 (Reg. ₹2,999)</option>
-                  </select>
-                </div>
-
-                {couponMessage && (
-                  <div style={{ background: '#E8F8EE', border: '1px solid #0F9D58', color: '#0F9D58', borderRadius: '8px', padding: '10px 14px', fontSize: '13px', fontWeight: 700, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: 6, textAlign: 'left' }}>
-                    <FaCheckCircle /> {couponMessage}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  style={{
-                    width: '100%', padding: '12px', background: 'linear-gradient(135deg, #FFC93C 0%, #F59E0B 100%)',
-                    color: '#0F172A', border: 'none', borderRadius: '8px', fontWeight: '900', fontSize: '14.5px', cursor: 'pointer',
-                    boxShadow: '0 4px 14px rgba(245, 158, 11, 0.4)', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = 'translateY(-1px)';
-                    e.currentTarget.style.boxShadow = '0 6px 16px rgba(245, 158, 11, 0.5)';
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = '';
-                    e.currentTarget.style.boxShadow = '0 4px 14px rgba(245, 158, 11, 0.4)';
-                  }}
-                >
-                  Claim 50% Off &amp; Redeem Offer →
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
 
       {showAuthModal && (
         <div className="auth-modal-overlay" onClick={() => setShowAuthModal(false)}>
@@ -688,13 +570,27 @@ export default function Header() {
 
               <div style={{ marginBottom: '16px', textAlign: 'left' }}>
                 <label style={{ fontSize: '11px', fontWeight: 700, color: 'var(--muted)' }}>Password *</label>
-                <input 
-                  style={{
-                    width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1.5px solid var(--line)',
-                    background: '#f8fafc', fontSize: '13px', color: 'var(--ink)', outline: 'none', boxSizing: 'border-box', marginTop: '4px'
-                  }} 
-                  name="password" type="password" value={authForm.password} onChange={handleAuthChange} placeholder="••••••••" required 
-                />
+                <div style={{ position: 'relative', marginTop: '4px' }}>
+                  <input 
+                    style={{
+                      width: '100%', padding: '10px 38px 10px 12px', borderRadius: '8px', border: '1.5px solid var(--line)',
+                      background: '#f8fafc', fontSize: '13px', color: 'var(--ink)', outline: 'none', boxSizing: 'border-box'
+                    }} 
+                    name="password" type={showModalPwd ? 'text' : 'password'} value={authForm.password} onChange={handleAuthChange} placeholder="••••••••" required 
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowModalPwd(!showModalPwd)}
+                    style={{
+                      position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)',
+                      background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer',
+                      fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}
+                    title={showModalPwd ? 'Hide password' : 'See password'}
+                  >
+                    {showModalPwd ? <FaEyeSlash /> : <FaEye />}
+                  </button>
+                </div>
               </div>
 
               {authMode === 'login' ? (

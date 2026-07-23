@@ -77,7 +77,7 @@ const combos = [
 ];
 
 export default function SubscriptionPage() {
-  const [billing, setBilling] = useState('monthly');
+  const [billing, setBilling] = useState('yearly');
 
   return (
     <div style={{ minHeight: '80vh', background: 'var(--bg)' }}>

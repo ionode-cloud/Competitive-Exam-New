@@ -10,37 +10,32 @@ import {
   FaStar,
   FaVideo,
   FaBullseye,
-  FaBullhorn,
   FaFileAlt,
   FaClipboardList,
   FaTrophy,
-  FaGem,
   FaCalculator,
   FaPuzzlePiece,
   FaBookOpen,
   FaGlobe,
   FaCheck,
   FaNewspaper,
-  FaWhatsapp,
-  FaInstagram,
-  FaTelegramPlane,
-  FaYoutube,
   FaLaptopCode,
   FaFont,
   FaMapMarkerAlt,
   FaFire,
   FaBolt,
-  FaRegDotCircle
+  FaRegDotCircle,
+  FaGem,
 } from 'react-icons/fa';
 
 /* ══════════════════════════════════════════════════════════
    1. HERO DASHBOARD
 ══════════════════════════════════════════════════════════ */
 const catTiles = [
-  { icon: <FaUniversity />, label: 'Bank & Insurance',  bg: 'var(--blue-bg)',   go: 'var(--blue)'   },
-  { icon: <FaTrain />, label: 'SSC & Railway',     bg: 'var(--green-bg)',  go: 'var(--green)'  },
+  { icon: <FaUniversity />, label: 'Bank & Insurance', bg: 'var(--blue-bg)', go: 'var(--blue)' },
+  { icon: <FaTrain />, label: 'SSC & Railway', bg: 'var(--green-bg)', go: 'var(--green)' },
   { icon: <FaBalanceScale />, label: 'Regulatory Bodies', bg: 'var(--purple-bg)', go: 'var(--purple)' },
-  { icon: <FaLandmark />, label: 'State PSC / SSSC',  bg: 'var(--orange-bg)', go: 'var(--orange)' },
+  { icon: <FaLandmark />, label: 'State PSC / SSSC', bg: 'var(--orange-bg)', go: 'var(--orange)' },
 ];
 
 const promoSlides = [
@@ -99,7 +94,7 @@ function Dashboard() {
 ══════════════════════════════════════════════════════════ */
 function SectionHeader({ eyebrow, title, linkTo, linkLabel }) {
   return (
-    <div className="section-head-row" style={{ marginBottom: '32px' }}>
+    <div className="section-head-row">
       <div>
         <div className="eyebrow" style={{ letterSpacing: '1.5px', fontWeight: 800, color: '#F59E0B' }}>{eyebrow}</div>
         <h2 style={{ fontSize: 'clamp(22px, 2.5vw, 28px)', fontWeight: 850, letterSpacing: '-0.5px', marginTop: '6px' }}>{title}</h2>
@@ -116,60 +111,116 @@ function SectionHeader({ eyebrow, title, linkTo, linkLabel }) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   2. QUICK ACCESS
+   2. SUBJECT TEST SECTION
+══════════════════════════════════════════════════════════ */
+const subjectTestCards = [
+  { icon: <FaCalculator />,      name: 'Mathematics',  color: '#B4232F', bg: '#FCEBEA', desc: 'Quantitative aptitude & shortcuts', tests: 4, free: 2, banner: 'linear-gradient(135deg, #B4232F 0%, #7f1d1d 100%)' },
+  { icon: <FaPuzzlePiece />,     name: 'Reasoning',    color: '#7C3AED', bg: '#F3ECFE', desc: 'Logical, analytical & mental ability', tests: 4, free: 2, banner: 'linear-gradient(135deg, #7C3AED 0%, #4c1d95 100%)' },
+  { icon: <FaBookOpen />,        name: 'English',      color: '#1957D6', bg: '#EAF1FD', desc: 'Grammar review & vocabulary builder', tests: 4, free: 2, banner: 'linear-gradient(135deg, #1957D6 0%, #1e3a8a 100%)' },
+  { icon: <FaGlobe />,           name: 'General Knowledge', color: '#0F9D58', bg: '#E8F8EE', desc: 'State & national awareness', tests: 4, free: 2, banner: 'linear-gradient(135deg, #0F9D58 0%, #064e3b 100%)' },
+  { icon: <FaLaptopCode />,      name: 'Computer',     color: '#0891B2', bg: '#E0F7FA', desc: 'MS Office, networking & OS fundamentals', tests: 4, free: 2, banner: 'linear-gradient(135deg, #0891B2 0%, #164e63 100%)' },
+  { icon: <FaFont />,            name: 'Odia Language', color: '#EA7A1E', bg: '#FEF1E4', desc: 'Odia grammar & syntax mock tests', tests: 4, free: 2, banner: 'linear-gradient(135deg, #EA7A1E 0%, #7c2d12 100%)' },
+];
+
+function SubjectTestSection() {
+  return (
+    <section id="subject-test-home" style={{ padding: '0', background: 'linear-gradient(to bottom, #f8fafc, #ffffff)' }}>
+      <div className="wrap-full">
+        <SectionHeader
+          eyebrow={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><FaClipboardList /> Practice Topic-Wise — Master Every Subject</span>}
+           linkTo="/subject-test"
+          linkLabel="All Subjects →"
+        />
+        <div className="subject-test-grid-6">
+          {subjectTestCards.map((s, i) => (
+            <Link key={i} to="/subject-test" style={{ textDecoration: 'none' }}>
+              <div className="subject-card-premium" style={{ '--accent-color': s.color }}>
+                {/* Coloured top banner */}
+                <div className="subject-card-banner" style={{ background: s.banner }}>
+                  <div className="subject-card-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {s.icon}
+                  </div>
+                </div>
+                {/* Card body */}
+                <div className="subject-card-body">
+                  <h3>{s.name}</h3>
+                  <p>{s.desc}</p>
+                  <div className="subject-card-stats">
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                      <FaFileAlt /> {s.tests} mock tests
+                    </span>
+                    <span style={{ color: s.color, fontWeight: 700 }}>{s.free} Free tests</span>
+                  </div>
+                  <div className="subject-card-btn">
+                    <span>Practice Now</span>
+                    <span>→</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   2.5. QUICK ACCESS SECTION
 ══════════════════════════════════════════════════════════ */
 const qaPanels = [
-  { 
-    bgAccent: 'rgba(124, 58, 237, 0.08)', 
-    themeColor: '#7C3AED', 
-    icon: <FaStar />, 
-    title: 'Popular', 
+  {
+    bgAccent: 'rgba(124, 58, 237, 0.08)',
+    themeColor: '#7C3AED',
+    icon: <FaStar />,
+    title: 'Popular',
     sub: 'Best-selling picks',
     links: [
-      { icon: <FaFileAlt />, label: 'PYQ Bank', href: '/pyq-ebook' }, 
-      { icon: <FaClipboardList />, label: 'Mock Tests', href: '/subject-test' }, 
-      { icon: <FaTrophy />, label: 'Test Series', href: '/subject-test' }, 
-      { icon: <FaGem />, label: 'Super Plan', href: '/subscription' }
-    ] 
+      { icon: <FaFileAlt />, label: 'PYQ Bank', href: '/pyq-ebook' },
+      { icon: <FaClipboardList />, label: 'Mock Tests', href: '/mock-test' },
+      { icon: <FaGem />, label: 'Super Plan', href: '/subscription' },
+      { icon: <FaTrophy />, label: 'Free PDFs', href: '/materials' }
+    ]
   },
-  { 
-    bgAccent: 'rgba(16, 185, 129, 0.08)', 
-    themeColor: '#10B981', 
-    icon: <FaVideo />, 
-    title: 'Video Classes', 
+  {
+    bgAccent: 'rgba(16, 185, 129, 0.08)',
+    themeColor: '#10B981',
+    icon: <FaVideo />,
+    title: 'Video Classes',
     sub: 'Learn, practice, improve',
     links: [
-      { icon: <FaCalculator />, label: 'Quants', href: '/subject-test' }, 
-      { icon: <FaPuzzlePiece />, label: 'Reasoning', href: '/subject-test' }, 
-      { icon: <FaBookOpen />, label: 'English', href: '/subject-test' }, 
+      { icon: <FaCalculator />, label: 'Quants', href: '/subject-test' },
+      { icon: <FaPuzzlePiece />, label: 'Reasoning', href: '/subject-test' },
+      { icon: <FaBookOpen />, label: 'English', href: '/subject-test' },
       { icon: <FaGlobe />, label: 'GK Hustle', href: '/materials' }
-    ] 
+    ]
   },
-  { 
-    bgAccent: 'rgba(59, 130, 246, 0.08)', 
-    themeColor: '#3B82F6', 
-    icon: <FaBullseye />, 
-    title: 'Free Materials', 
+  {
+    bgAccent: 'rgba(59, 130, 246, 0.08)',
+    themeColor: '#3B82F6',
+    icon: <FaBullseye />,
+    title: 'Free Materials',
     sub: 'Practice daily, free',
     links: [
-      { icon: <FaFileAlt />, label: 'Free PDFs', href: '/materials' }, 
-      { icon: <FaCheck />, label: 'Practice Quiz', href: '/subject-test' }, 
-      { icon: <FaFileAlt />, label: 'PYP', href: '/pyq-ebook' }, 
+      { icon: <FaFileAlt />, label: 'Free PDFs', href: '/materials' },
+      { icon: <FaCheck />, label: 'Practice Quiz', href: '/subject-test' },
+      { icon: <FaFileAlt />, label: 'PYP', href: '/pyq-ebook' },
       { icon: <FaNewspaper />, label: 'Daily CA', href: '/materials' }
-    ] 
+    ]
   },
-  { 
-    bgAccent: 'rgba(245, 158, 11, 0.08)', 
-    themeColor: '#F59E0B', 
-    icon: <FaBullhorn />, 
-    title: 'Follow Us', 
-    sub: 'Instant updates',
+  {
+    bgAccent: 'rgba(239, 68, 68, 0.08)',
+    themeColor: '#EF4444',
+    icon: <FaRegDotCircle />,
+    title: 'Subject Test',
+    sub: 'Topic-wise practice',
     links: [
-      { icon: <FaWhatsapp />, label: 'WhatsApp', href: '/contact' }, 
-      { icon: <FaInstagram />, label: 'Instagram', href: '/contact' }, 
-      { icon: <FaTelegramPlane />, label: 'Telegram', href: '/contact' }, 
-      { icon: <FaYoutube />, label: 'YouTube', href: '/contact' }
-    ] 
+      { icon: <FaCalculator />, label: 'Mathematics', href: '/subject-test' },
+      { icon: <FaPuzzlePiece />, label: 'Reasoning', href: '/subject-test' },
+      { icon: <FaFont />, label: 'Odia Language', href: '/subject-test' },
+      { icon: <FaLaptopCode />, label: 'Computer', href: '/subject-test' }
+    ]
   },
 ];
 
@@ -205,15 +256,16 @@ function QuickAccess() {
   );
 }
 
+
 /* ══════════════════════════════════════════════════════════
    3. HOME SECTION — EXAM SECTION (Luxury Resort Cards)
 ══════════════════════════════════════════════════════════ */
 const homeExamCategories = [
-  { icon: <FaUniversity />, label: 'Bank & Insurance',  color: '#1957D6', banner: 'linear-gradient(135deg, #1957D6 0%, #1e3a8a 100%)', count: '12 exams', rating: '★ 4.9' },
-  { icon: <FaTrain />, label: 'SSC & Railway',     color: '#0F9D58', banner: 'linear-gradient(135deg, #0F9D58 0%, #064e3b 100%)', count: '8 exams', rating: '★ 4.8'  },
-  { icon: <FaLandmark />, label: 'State PSC / SSSC',  color: '#7C3AED', banner: 'linear-gradient(135deg, #7C3AED 0%, #4c1d95 100%)', count: '15 exams', rating: '★ 4.9' },
-  { icon: <FaShieldAlt />, label: 'Police & Defence',  color: '#B4232F', banner: 'linear-gradient(135deg, #B4232F 0%, #7f1d1d 100%)', count: '6 exams', rating: '★ 4.7'  },
-  { icon: <FaChalkboardTeacher />, label: 'Teaching',          color: '#EA7A1E', banner: 'linear-gradient(135deg, #EA7A1E 0%, #7c2d12 100%)', count: '9 exams', rating: '★ 4.8'  },
+  { icon: <FaUniversity />, label: 'Bank & Insurance', color: '#1957D6', banner: 'linear-gradient(135deg, #1957D6 0%, #1e3a8a 100%)', count: '12 exams', rating: '★ 4.9' },
+  { icon: <FaTrain />, label: 'SSC & Railway', color: '#0F9D58', banner: 'linear-gradient(135deg, #0F9D58 0%, #064e3b 100%)', count: '8 exams', rating: '★ 4.8' },
+  { icon: <FaLandmark />, label: 'State PSC / SSSC', color: '#7C3AED', banner: 'linear-gradient(135deg, #7C3AED 0%, #4c1d95 100%)', count: '15 exams', rating: '★ 4.9' },
+  { icon: <FaShieldAlt />, label: 'Police & Defence', color: '#B4232F', banner: 'linear-gradient(135deg, #B4232F 0%, #7f1d1d 100%)', count: '6 exams', rating: '★ 4.7' },
+  { icon: <FaChalkboardTeacher />, label: 'Teaching', color: '#EA7A1E', banner: 'linear-gradient(135deg, #EA7A1E 0%, #7c2d12 100%)', count: '9 exams', rating: '★ 4.8' },
 ];
 
 function ExamSectionPreview() {
@@ -254,11 +306,11 @@ function ExamSectionPreview() {
 ══════════════════════════════════════════════════════════ */
 const homeSubjectTests = [
   { icon: <FaCalculator />, name: 'Mathematics', color: '#B4232F', bg: '#FCEBEA', desc: 'Quantitative aptitude sets', tests: 4, free: 2, banner: 'linear-gradient(135deg, #B4232F 0%, #7f1d1d 100%)' },
-  { icon: <FaPuzzlePiece />, name: 'Reasoning',   color: '#7C3AED', bg: '#F3ECFE', desc: 'Logical & mental tests', tests: 4, free: 2, banner: 'linear-gradient(135deg, #7C3AED 0%, #4c1d95 100%)' },
-  { icon: <FaBookOpen />, name: 'English',     color: '#1957D6', bg: '#EAF1FD', desc: 'Grammar & vocab review', tests: 4, free: 2, banner: 'linear-gradient(135deg, #1957D6 0%, #1e3a8a 100%)' },
-  { icon: <FaGlobe />, name: 'GK',          color: '#0F9D58', bg: '#E8F8EE', desc: 'State & national awareness', tests: 4, free: 2, banner: 'linear-gradient(135deg, #0F9D58 0%, #064e3b 100%)' },
-  { icon: <FaLaptopCode />, name: 'Computer',    color: '#0891B2', bg: '#E0F7FA', desc: 'OS & software systems', tests: 4, free: 2, banner: 'linear-gradient(135deg, #0891B2 0%, #164e63 100%)' },
-  { icon: <FaFont />, name: 'Odia',        color: '#EA7A1E', bg: '#FEF1E4', desc: 'Odia syntax & revision', tests: 4, free: 2, banner: 'linear-gradient(135deg, #EA7A1E 0%, #7c2d12 100%)' },
+  { icon: <FaPuzzlePiece />, name: 'Reasoning', color: '#7C3AED', bg: '#F3ECFE', desc: 'Logical & mental tests', tests: 4, free: 2, banner: 'linear-gradient(135deg, #7C3AED 0%, #4c1d95 100%)' },
+  { icon: <FaBookOpen />, name: 'English', color: '#1957D6', bg: '#EAF1FD', desc: 'Grammar & vocab review', tests: 4, free: 2, banner: 'linear-gradient(135deg, #1957D6 0%, #1e3a8a 100%)' },
+  { icon: <FaGlobe />, name: 'GK', color: '#0F9D58', bg: '#E8F8EE', desc: 'State & national awareness', tests: 4, free: 2, banner: 'linear-gradient(135deg, #0F9D58 0%, #064e3b 100%)' },
+  { icon: <FaLaptopCode />, name: 'Computer', color: '#0891B2', bg: '#E0F7FA', desc: 'OS & software systems', tests: 4, free: 2, banner: 'linear-gradient(135deg, #0891B2 0%, #164e63 100%)' },
+  { icon: <FaFont />, name: 'Odia', color: '#EA7A1E', bg: '#FEF1E4', desc: 'Odia syntax & revision', tests: 4, free: 2, banner: 'linear-gradient(135deg, #EA7A1E 0%, #7c2d12 100%)' },
 ];
 
 function SubjectTestPreview() {
@@ -303,12 +355,12 @@ function SubjectTestPreview() {
    5. HOME SECTION — PYQ EBOOK (Neumorphic Card Design)
 ══════════════════════════════════════════════════════════ */
 const homePYQBooks = [
-  { subject: 'Computer',     icon: <FaLaptopCode />, color: '#1957D6', bg: '#EAF1FD', tag: 'Most Demanded', tagIcon: <FaFire />, pages: '180 pages', price: '₹199' },
-  { subject: 'English',      icon: <FaBookOpen />, color: '#0F9D58', bg: '#E8F8EE', tag: 'Best Seller', tagIcon: <FaStar />,    pages: '220 pages', price: '₹149' },
-  { subject: 'Odia',         icon: <FaFont />, color: '#7C3AED', bg: '#F3ECFE', tag: 'New Edition', tagIcon: <FaRegDotCircle />,   pages: '160 pages', price: '₹129' },
-  { subject: 'Mathematics',  icon: <FaCalculator />, color: '#B4232F', bg: '#FCEBEA', tag: 'High Demand', tagIcon: <FaBolt />,   pages: '250 pages', price: '₹219' },
+  { subject: 'Computer', icon: <FaLaptopCode />, color: '#1957D6', bg: '#EAF1FD', tag: 'Most Demanded', tagIcon: <FaFire />, pages: '180 pages', price: '₹199' },
+  { subject: 'English', icon: <FaBookOpen />, color: '#0F9D58', bg: '#E8F8EE', tag: 'Best Seller', tagIcon: <FaStar />, pages: '220 pages', price: '₹149' },
+  { subject: 'Odia', icon: <FaFont />, color: '#7C3AED', bg: '#F3ECFE', tag: 'New Edition', tagIcon: <FaRegDotCircle />, pages: '160 pages', price: '₹129' },
+  { subject: 'Mathematics', icon: <FaCalculator />, color: '#B4232F', bg: '#FCEBEA', tag: 'High Demand', tagIcon: <FaBolt />, pages: '250 pages', price: '₹219' },
   { subject: 'General Knowledge', icon: <FaGlobe />, color: '#EA7A1E', bg: '#FEF1E4', tag: 'Most Demanded', tagIcon: <FaFire />, pages: '300 pages', price: '₹249' },
-  { subject: 'OSSSC RI PYQ', icon: <FaFileAlt />, color: '#B4232F', bg: '#FCEBEA', tag: 'Free', tagIcon: <FaRegDotCircle />,          pages: '140 pages', price: 'Free' },
+  { subject: 'OSSSC RI PYQ', icon: <FaFileAlt />, color: '#B4232F', bg: '#FCEBEA', tag: 'Free', tagIcon: <FaRegDotCircle />, pages: '140 pages', price: 'Free' },
 ];
 
 function PYQEbookPreview() {
@@ -316,7 +368,7 @@ function PYQEbookPreview() {
     <section id="pyq-ebook" style={{ background: '#fff', padding: '0' }}>
       <div className="wrap-full">
         <SectionHeader eyebrow={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><FaBookOpen /> PYQ Ebook</span>} title="Neumorphic E-Book Library Showcase" linkTo="/pyq-ebook" linkLabel="All E-Books →" />
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: '22px' }}>
+        <div className="pyq-ebook-grid">
           {homePYQBooks.map((book, i) => (
             <Link key={i} to="/pyq-ebook" style={{ textDecoration: 'none' }}>
               <div className="neumorphic-card">
@@ -350,9 +402,9 @@ function PYQEbookPreview() {
 ══════════════════════════════════════════════════════════ */
 const homeMaterials = [
   { title: 'Current Affairs', icon: <FaNewspaper />, color: '#B4232F', bg: '#FCEBEA', desc: 'Daily & Monthly Current Affairs PDF — Updated for 2026 Exams', tag: 'Most Demanded', tagIcon: <FaFire /> },
-  { title: 'Odisha GK',       icon: <FaLandmark />, color: '#7C3AED', bg: '#F3ECFE', desc: 'History, Geography, Culture, Economy, Govt. Schemes of Odisha', tag: 'Top Rated', tagIcon: <FaStar /> },
-  { title: 'Static GK',       icon: <FaGlobe />, color: '#1957D6', bg: '#EAF1FD', desc: 'Awards, Sports, Books, Science, Polity, Economy capsule',       tag: 'High Demand', tagIcon: <FaBolt /> },
-  { title: 'Grammar & English',icon: <FaBookOpen />, color: '#0F9D58', bg: '#E8F8EE', desc: 'English Prepositions, Rules, Usage & Practice Questions',        tag: 'Newly Added', tagIcon: <FaRegDotCircle /> },
+  { title: 'Odisha GK', icon: <FaLandmark />, color: '#7C3AED', bg: '#F3ECFE', desc: 'History, Geography, Culture, Economy, Govt. Schemes of Odisha', tag: 'Top Rated', tagIcon: <FaStar /> },
+  { title: 'Static GK', icon: <FaGlobe />, color: '#1957D6', bg: '#EAF1FD', desc: 'Awards, Sports, Books, Science, Polity, Economy capsule', tag: 'High Demand', tagIcon: <FaBolt /> },
+  { title: 'Grammar & English', icon: <FaBookOpen />, color: '#0F9D58', bg: '#E8F8EE', desc: 'English Prepositions, Rules, Usage & Practice Questions', tag: 'Newly Added', tagIcon: <FaRegDotCircle /> },
 ];
 
 function MaterialPagePreview() {
@@ -389,9 +441,9 @@ function MaterialPagePreview() {
    8. HOME SECTION — SUBSCRIPTION (Premium Glassmorphism Packages)
 ══════════════════════════════════════════════════════════ */
 const homePackages = [
-  { name: 'Starter Plan',   price: '₹499',   period: '/mo', color: '#1957D6', bg: '#EAF1FD', features: ['5 Mock Tests', '10 Subject Tests', 'Basic Materials'], highlight: false },
-  { name: 'Pro Package',    price: '₹1,499', period: '/mo', color: '#7C3AED', bg: '#F3ECFE', features: ['50 Mock Tests', 'All Subject Tests', 'Live Classes'], highlight: true },
-  { name: 'Super Access',   price: '₹2,999', period: '/mo', color: '#B4232F', bg: '#FCEBEA', features: ['Unlimited Tests', 'All Courses', 'Doubt Sessions'], highlight: false },
+  { name: 'Starter Plan', price: '₹499', period: '/mo', color: '#1957D6', bg: '#EAF1FD', features: ['5 Mock Tests', '10 Subject Tests', 'Basic Materials'], highlight: false },
+  { name: 'Pro Package', price: '₹1,499', period: '/mo', color: '#7C3AED', bg: '#F3ECFE', features: ['50 Mock Tests', 'All Subject Tests', 'Live Classes'], highlight: true },
+  { name: 'Super Access', price: '₹2,999', period: '/mo', color: '#B4232F', bg: '#FCEBEA', features: ['Unlimited Tests', 'All Courses', 'Doubt Sessions'], highlight: false },
 ];
 
 function SubscriptionPreview() {
@@ -401,9 +453,9 @@ function SubscriptionPreview() {
         <SectionHeader eyebrow={<span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><FaGem /> Subscription</span>} title="Choose the Luxury Plan for Ultimate Success" linkTo="/subscription" linkLabel="View All Subscriptions →" />
         <div className="pkg-grid" style={{ alignItems: 'stretch' }}>
           {homePackages.map((pkg, i) => (
-            <div key={i} className={`pricing-card-premium ${pkg.highlight ? 'recommended' : ''}`} style={{ 
-              background: pkg.bg, 
-              border: `1.5px solid ${pkg.color}33`, 
+            <div key={i} className={`pricing-card-premium ${pkg.highlight ? 'recommended' : ''}`} style={{
+              background: pkg.bg,
+              border: `1.5px solid ${pkg.color}33`,
               color: 'var(--ink)',
               transform: pkg.highlight ? 'scale(1.03)' : 'none',
               boxShadow: pkg.highlight ? `0 10px 30px ${pkg.color}22` : 'none'
@@ -435,14 +487,14 @@ function SubscriptionPreview() {
                 boxShadow: `0 4px 12px ${pkg.color}33`,
                 transition: 'all 0.3s'
               }}
-              onMouseEnter={e => {
-                e.currentTarget.style.transform = 'scale(1.02)';
-                e.currentTarget.style.boxShadow = `0 6px 16px ${pkg.color}55`;
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.transform = '';
-                e.currentTarget.style.boxShadow = `0 4px 12px ${pkg.color}33`;
-              }}>
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'scale(1.02)';
+                  e.currentTarget.style.boxShadow = `0 6px 16px ${pkg.color}55`;
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = '';
+                  e.currentTarget.style.boxShadow = `0 4px 12px ${pkg.color}33`;
+                }}>
                 Get {pkg.name} →
               </Link>
             </div>
@@ -484,14 +536,14 @@ export default function LandingPage() {
     <div className="landing-page-container">
       {/* Hero */}
       <Dashboard />
-      {/* Quick Access */}
+      {/* Subject Test Section */}
+      <SubjectTestSection />
+      {/* Quick Access Section */}
       <QuickAccess />
-      {/* Exam Section Preview */}
-      <ExamSectionPreview />
-      {/* Subject Test Preview */}
-      <SubjectTestPreview />
       {/* PYQ Ebook Preview */}
       <PYQEbookPreview />
+      {/* Exam Section Preview */}
+      <ExamSectionPreview />
       {/* Material Page Preview */}
       <MaterialPagePreview />
       {/* Subscription Preview */}

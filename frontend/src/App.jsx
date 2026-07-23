@@ -1,9 +1,10 @@
-// App.jsx — clean root: only Header + Footer in components, pages for everything else
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
+// Existing user-facing
 import Header           from './components/Header';
 import Footer           from './components/Footer';
-
+import ScrollToTopButton from './components/ScrollToTopButton';
 import LandingPage      from './pages/LandingPage';
 import ExamSectionPage  from './pages/ExamSectionPage';
 import SubjectTestPage  from './pages/SubjectTestPage';
@@ -12,27 +13,84 @@ import PYQEbookPage     from './pages/PYQEbookPage';
 import MaterialsPage    from './pages/MaterialsPage';
 import ContactUsPage    from './pages/ContactUsPage';
 import SubscriptionPage from './pages/SubscriptionPage';
+import UserProfilePage  from './pages/UserProfilePage';
+
+// Admin panel
+import AdminLayout      from './admin/layouts/AdminLayout';
+import Dashboard        from './admin/pages/Dashboard';
+import OdishaExams      from './admin/pages/OdishaExams';
+import MockTests        from './admin/pages/MockTests';
+import ManageMockTest   from './admin/pages/ManageMockTest';
+import CreateMockTest   from './admin/pages/CreateMockTest';
+import QuestionBank     from './admin/pages/QuestionBank';
+import Subjects         from './admin/pages/Subjects';
+import EBooks           from './admin/pages/EBooks';
+import Students         from './admin/pages/Students';
+import AdminCredentials from './admin/pages/AdminCredentials';
+import Orders           from './admin/pages/Orders';
+import Payments         from './admin/pages/Payments';
+import Reports          from './admin/pages/Reports';
+import Notifications    from './admin/pages/Notifications';
+
+// Contexts
+import { AuthProvider } from './admin/context/AuthContext';
+import { ThemeProvider } from './admin/context/ThemeContext';
+
+// User-facing layout wrapper
+function UserLayout({ children }) {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
+}
 
 export default function App() {
   return (
-    <BrowserRouter>
-      {/* Header: MarqueeBanner + TopRow + MegaNav (all in one) */}
-      <Header />
+    <AuthProvider>
+      <ThemeProvider>
+        <BrowserRouter>
+          <Toaster position="top-right" toastOptions={{ style: { borderRadius: '10px', background: '#1e293b', color: '#f1f5f9' } }} />
+          <ScrollToTopButton />
+          <Routes>
+            {/* Redirect /login to open login modal on portal */}
+            <Route path="/login" element={<Navigate to="/?login=true" replace />} />
 
-      <main>
-        <Routes>
-          <Route path="/"             element={<LandingPage />}      />
-          <Route path="/exam-section" element={<ExamSectionPage />}  />
-          <Route path="/subject-test" element={<SubjectTestPage />}  />
-          <Route path="/mock-test"    element={<MockTestPage />}     />
-          <Route path="/pyq-ebook"    element={<PYQEbookPage />}     />
-          <Route path="/materials"    element={<MaterialsPage />}    />
-          <Route path="/contact"      element={<ContactUsPage />}    />
-          <Route path="/subscription" element={<SubscriptionPage />} />
-        </Routes>
-      </main>
+            {/* Admin Panel (protected by AdminLayout) */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="exams" element={<OdishaExams />} />
+              <Route path="mock-tests" element={<MockTests />} />
+              <Route path="manage-mock-tests" element={<ManageMockTest />} />
+              <Route path="mock-tests/create" element={<CreateMockTest />} />
+              <Route path="mock-tests/:id/edit" element={<CreateMockTest />} />
+              <Route path="question-bank" element={<QuestionBank />} />
+              <Route path="subjects" element={<Subjects />} />
+              <Route path="ebooks" element={<EBooks />} />
+              <Route path="students" element={<Students />} />
+              <Route path="credentials" element={<AdminCredentials />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="notifications" element={<Notifications />} />
+            </Route>
 
-      <Footer />
-    </BrowserRouter>
+            {/* User-facing pages */}
+            <Route path="/" element={<UserLayout><LandingPage /></UserLayout>} />
+            <Route path="/exam-section" element={<UserLayout><ExamSectionPage /></UserLayout>} />
+            <Route path="/subject-test" element={<UserLayout><SubjectTestPage /></UserLayout>} />
+            <Route path="/mock-test" element={<UserLayout><MockTestPage /></UserLayout>} />
+            <Route path="/pyq-ebook" element={<UserLayout><PYQEbookPage /></UserLayout>} />
+            <Route path="/materials" element={<UserLayout><MaterialsPage /></UserLayout>} />
+            <Route path="/contact" element={<UserLayout><ContactUsPage /></UserLayout>} />
+            <Route path="/subscription" element={<UserLayout><SubscriptionPage /></UserLayout>} />
+            <Route path="/profile" element={<UserLayout><UserProfilePage /></UserLayout>} />
+          </Routes>
+        </BrowserRouter>
+      </ThemeProvider>
+    </AuthProvider>
   );
 }

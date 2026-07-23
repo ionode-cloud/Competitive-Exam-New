@@ -127,7 +127,7 @@ export default function Footer() {
               placeholder="Mobile number (optional)"
             />
             <button className="newsletter-btn">
-              <FaBell style={{ marginRight: 6 }} /> Subscribe Now
+              <FaBell /> Subscribe Now
             </button>
           </div>
         </div>
