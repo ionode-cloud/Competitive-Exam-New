@@ -1,5 +1,6 @@
 // pages/MaterialsPage.jsx
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   FaNewspaper,
   FaLandmark,
@@ -283,8 +284,19 @@ const initialMaterials = [
 ];
 
 export default function MaterialsPage() {
-  const [active, setActive] = useState('All');
+  const [searchParams] = useSearchParams();
+
+  // Derive the active category from ?cat= param (primitive string — reliable comparison)
+  const paramCat = searchParams.get('cat') ?? '';
+  const urlCat = categories.includes(paramCat) ? paramCat : 'All';
+
+  const [active, setActive] = useState(urlCat);
   const [materialsList, setMaterialsList] = useState(initialMaterials);
+
+  // Re-sync when ?cat= param changes
+  useEffect(() => {
+    setActive(urlCat);
+  }, [urlCat]);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
   const [activePdf, setActivePdf] = useState(null);
   const [paymentMaterial, setPaymentMaterial] = useState(null);
@@ -369,14 +381,7 @@ export default function MaterialsPage() {
 
   return (
     <div style={{ minHeight: '80vh', background: 'var(--bg)' }}>
-      {/* Hidden File Input for PDF Upload */}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="application/pdf"
-        style={{ display: 'none' }}
-      />
+
 
       {/* Hero */}
       <div style={{ background: 'linear-gradient(135deg, rgb(15, 23, 42), rgba(234, 122, 30, 0.133))', padding: '22px 0 18px' }}>
@@ -390,21 +395,6 @@ export default function MaterialsPage() {
               <p style={{ color: '#94A3B8', fontSize: 13.5, maxWidth: '52ch', lineHeight: 1.6, margin: '0 0 12px' }}>
                 Read Current Affairs, Odisha GK, Static GK, English, Computer &amp; more PDFs online — curated for Odisha state exams.
               </p>
-              {/* Upload PDF Button in Hero */}
-              <button
-                onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                style={{
-                  background: 'linear-gradient(135deg, #FFC93C 0%, #F59E0B 100%)',
-                  color: '#0F172A', border: 'none', borderRadius: 25,
-                  padding: '9px 20px', fontWeight: 850, fontSize: 13, cursor: 'pointer',
-                  boxShadow: '0 4px 14px rgba(245, 158, 11, 0.35)', display: 'inline-flex',
-                  alignItems: 'center', gap: 8, transition: 'all 0.15s'
-                }}
-                onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
-                onMouseLeave={e => e.currentTarget.style.transform = ''}
-              >
-                <FaUpload /> Upload PDF Manually
-              </button>
             </div>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', paddingTop: 6 }}>
               {[{ n: '200+', l: 'Free PDFs' }, { n: 'Daily', l: 'CA Updates' }, { n: '2L+', l: 'Downloads' }].map((s, i) => (
@@ -433,16 +423,6 @@ export default function MaterialsPage() {
               }}>{cat}</button>
             ))}
           </div>
-          <button
-            onClick={() => fileInputRef.current && fileInputRef.current.click()}
-            style={{
-              padding: '6px 14px', borderRadius: 20, border: '1.5px solid var(--primary)',
-              background: '#F0F7FF', color: 'var(--primary)', fontWeight: 800, fontSize: 12,
-              cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6
-            }}
-          >
-            <FaPlusCircle /> Upload PDF
-          </button>
         </div>
       </div>
 

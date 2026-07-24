@@ -1,5 +1,6 @@
 // MockTestPage.jsx — Full-Length (100 Marks) & Sectional (< 100 Marks) Mock Tests
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   FaLandmark,
   FaTrain,
@@ -154,9 +155,21 @@ const mockTestCategories = [
 const diffColors = { Easy: '#0F9D58', Medium: '#EA7A1E', Hard: '#B4232F' };
 
 export default function MockTestPage() {
-  const [activeCategory, setActiveCategory] = useState(0);
+  const [searchParams] = useSearchParams();
+
+  // Derive a primitive number so useEffect compares by value (not object reference)
+  const rawCat = parseInt(searchParams.get('cat') ?? '', 10);
+  const urlCat = isNaN(rawCat) ? 0 : Math.min(Math.max(rawCat, 0), mockTestCategories.length - 1);
+
+  const [activeCategory, setActiveCategory] = useState(urlCat);
   const [activeTopic, setActiveTopic] = useState(null);
   const [testTypeFilter, setTestTypeFilter] = useState('all'); // 'all' | 'full_length' | 'sectional'
+
+  // Re-sync whenever the ?cat= param value changes
+  useEffect(() => {
+    setActiveCategory(urlCat);
+    setActiveTopic(null);
+  }, [urlCat]); // primitive number — reliable comparison
 
   const cat = mockTestCategories[activeCategory];
   const topic = activeTopic !== null ? cat.topics[activeTopic] : null;

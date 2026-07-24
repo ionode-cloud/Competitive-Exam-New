@@ -1,5 +1,6 @@
 // SubjectTestPage.jsx — Subject-wise tests (2-level: Topics → Tests)
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   FaCalculator,
   FaPuzzlePiece,
@@ -137,8 +138,21 @@ const subjects = [
 const diffColors = { Easy: '#0F9D58', Medium: '#EA7A1E', Hard: '#B4232F' };
 
 export default function SubjectTestPage() {
-  const [activeSubject, setActiveSubject] = useState(0);
+  const [searchParams] = useSearchParams();
+
+  // Derive a primitive number so useEffect compares by value (not object reference)
+  const rawSub = parseInt(searchParams.get('sub') ?? '', 10);
+  const urlSub = isNaN(rawSub) ? 0 : Math.min(Math.max(rawSub, 0), subjects.length - 1);
+
+  const [activeSubject, setActiveSubject] = useState(urlSub);
   const [activeTopic, setActiveTopic] = useState(null);
+
+  // Re-sync whenever the ?sub= param value changes
+  useEffect(() => {
+    setActiveSubject(urlSub);
+    setActiveTopic(null);
+  }, [urlSub]); // primitive number — reliable comparison
+
   const sub = subjects[activeSubject];
   const topic = activeTopic !== null ? sub.topics[activeTopic] : null;
 

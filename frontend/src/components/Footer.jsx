@@ -12,6 +12,7 @@ import {
   FaBell,
   FaHeart,
 } from 'react-icons/fa';
+import Logo from '../assets/image.png';
 
 const socials = [
   { icon: <FaYoutube />, label: 'YouTube', href: '#' },
@@ -54,12 +55,12 @@ export default function Footer() {
         {/* Brand column */}
         <div className="footer-brand-col">
           <a href="#" className="footer-logo">
-            <span className="f-mark">PH</span>
-            <span className="f-name">PrepHub</span>
+            <span className="f-mark"><img style={{borderRadius:'10px;'}} src={Logo} alt="" /></span>
+            <span className="f-name">Sunil Sir Academy</span>
           </a>
           <p className="footer-tagline">
             Odisha's #1 platform for competitive exam preparation. We help
-            lakhs of aspirants crack OSSSC, OPSC, SSC, Banking &amp; Railway
+            lakhs of aspirants crack OSSSC, OPSC, SSC, Banking & Railway
             exams with expert-crafted content.
           </p>
 

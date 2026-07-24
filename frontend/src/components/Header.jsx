@@ -30,6 +30,7 @@ import {
   FaSignOutAlt,
   FaExclamationTriangle,
 } from 'react-icons/fa';
+import Logo from '../assets/image.png';
 
 /* ─── Marquee Banner ─── */
 const trendingItems = [
@@ -401,7 +402,7 @@ export default function Header() {
       <header>
         <div className="top-row wrap">
           <Link to="/" className="brand">
-            <span className="mark">GE</span>GovExam
+            <span className="mark" style={{ display: 'flex', alignItems: 'center' }}><img style={{borderRadius:'10px'}} src={Logo} alt="Logo" /></span>Sunil Sir Academy
           </Link>
           <div className="search-cluster">
             <span className="search-icon-prefix" style={{ display: 'flex', alignItems: 'center' }}><FaSearch /></span>

@@ -1,6 +1,6 @@
 // ExamSectionPage.jsx — Browse all exam categories
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import {
   FaUniversity,
   FaTrain,
@@ -79,8 +79,20 @@ const tagDetails = {
 };
 
 export default function ExamSectionPage() {
-  const [active, setActive] = useState(0);
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+
+  // Derive a primitive number — reliable useEffect comparison
+  const rawCat = parseInt(searchParams.get('cat') ?? '', 10);
+  const urlCat = isNaN(rawCat) ? 0 : Math.min(Math.max(rawCat, 0), examCategories.length - 1);
+
+  const [active, setActive] = useState(urlCat);
+
+  // Re-sync when ?cat= param changes
+  useEffect(() => {
+    setActive(urlCat);
+  }, [urlCat]);
+
   const cat = examCategories[active];
 
   return (

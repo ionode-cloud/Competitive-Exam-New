@@ -1,5 +1,6 @@
 // PYQEbookPage.jsx — PYQ E-Books library
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
   FaLaptopCode,
   FaBookOpen,
@@ -31,7 +32,16 @@ const pyqBooks = [
 ];
 
 export default function PYQEbookPage() {
-  const [search, setSearch] = useState('');
+  const [searchParams] = useSearchParams();
+
+  // Pre-fill search from ?q= URL param (primitive string — reliable comparison)
+  const urlQ = searchParams.get('q') ?? '';
+  const [search, setSearch] = useState(urlQ);
+
+  // Re-sync if param changes (e.g. user clicks a different card)
+  useEffect(() => {
+    setSearch(urlQ);
+  }, [urlQ]);
 
   const filtered = pyqBooks.filter(book =>
     book.subject.toLowerCase().includes(search.toLowerCase()) || book.desc.toLowerCase().includes(search.toLowerCase())
